@@ -10,8 +10,14 @@ terraform {
 #configuring aws access 
 provider "aws" {
   region = "us-east-1"
-  access_key = "AKIA2OEQAK3JWEPILJWJ"
-  secret_key = "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"
+  access_key = var.access_key
+  secret_key = var.secret_key
+}
+
+#defining the key pair 
+resource "aws_key_pair" "terraform_keypair" {
+  key_name = "terraform-key-pair"
+  public_key = file ("~/.ssh/id_rsa.pub")
 }
 
 #creating a vpc
@@ -121,7 +127,7 @@ resource "aws_eip" "terraform-test-eip" {
   depends_on                = [aws_internet_gateway.terraform-internet-gateway]
 }
 
-#creating the ubuntu server (instance)
+#creating the ubuntu server (instance) and launching your webserver
 resource "aws_instance" "test-terraform" {
   ami           = "ami-053b0d53c279acc90"
   instance_type = "t2.micro"
@@ -143,4 +149,24 @@ resource "aws_instance" "test-terraform" {
   tags = {
     Name = "test-terraform"
   }
+}
+
+output "instance_pub_ip_addr" {
+  value =  aws_eip.terraform-test-eip.public_ip
+}
+
+output "ami" {
+  value =  aws_instance.test-terraform.ami 
+}
+
+output "ami_id" {
+  value = aws_instance.test-terraform.id
+}
+
+output "ami_private_ip" {
+  value = aws_instance.test-terraform.private_ip
+}
+
+output "instance_state" {
+  value = aws_instance.test-terraform.instance_state
 }
