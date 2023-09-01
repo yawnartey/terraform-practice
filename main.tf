@@ -7,15 +7,6 @@ terraform {
   }
 }
 
-#remote state file config
-terraform {
-  backend "s3" {
-    bucket = "andlanc-terraform-state-files"
-    key    = "anlanc_terraform.tfstate"
-    region = "us-east-1"
-  }
-}
-
 #configuring aws access 
 provider "aws" {
   region = "us-east-1"
@@ -159,16 +150,6 @@ resource "aws_instance" "test-terraform" {
     Name = "test-terraform"
   }
 }
-
-#bucket to store state files remotely
-resource "aws_s3_bucket" "andlan-terraform-state" {
-  bucket = "andlanc-terraform-state-files"
-
-  tags = {
-    Name  = "Terraform state files"
-  }
-}
-
 
 output "instance_pub_ip_addr" {
   value =  aws_eip.terraform-test-eip.public_ip
