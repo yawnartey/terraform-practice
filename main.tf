@@ -1,18 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
-#configuring aws access 
-provider "aws" {
-  region = "us-east-1"
-  access_key = var.access_key
-  secret_key = var.secret_key
-}
 
 #defining the key pair 
 resource "aws_key_pair" "terraform_keypair" {
@@ -131,7 +116,8 @@ resource "aws_eip" "terraform-test-eip" {
 resource "aws_instance" "test-terraform" {
   ami           = "ami-053b0d53c279acc90"
   instance_type = "t2.micro"
-  availability_zone = "us-east-1a"
+  availability_zone = var.az
+  key_name = "terraform-key-pair"
 
   network_interface {
     network_interface_id = aws_network_interface.terraform-test-nic.id
